@@ -11,7 +11,7 @@ Daily operational records exist, but they do not automatically show when the car
 - Engineer healthcare capacity KPIs and anomaly flags.
 - Identify high-load, strained, watch, normal, and relief periods.
 - Compare forecasting models for system load, HHS care, net intake, and discharges.
-- Deliver dashboard, a polished research paper, presentation outline, and reproducible project documentation.
+- Deliver dashboard, a polished research paper, and reproducible project documentation.
 
 ## Dataset Information
 Source file: `data/raw/HHS_Unaccompanied_Alien_Children_Program.csv`
@@ -84,7 +84,6 @@ outputs/
   forecasts/           Forecast outputs and model comparisons
   tables/              Generated EDA and data-understanding tables
 paper/                 Standalone research/report paper
-presentation/          Slide-by-slide presentation structure
 tests/                 Automated validation checks
 ```
 
