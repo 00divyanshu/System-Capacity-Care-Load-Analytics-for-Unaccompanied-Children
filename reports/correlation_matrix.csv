@@ -1,0 +1,10 @@
+index,apprehended_placed_cbp,transferred_out_cbp,discharged_hhs,cbp_custody,hhs_care,total_system_load,net_daily_intake,discharge_offset_ratio,care_load_volatility_index
+apprehended_placed_cbp,1.0,0.888,0.628,0.951,0.691,0.712,0.078,-0.245,0.218
+transferred_out_cbp,0.888,1.0,0.657,0.925,0.714,0.733,0.153,-0.29,0.21
+discharged_hhs,0.628,0.657,1.0,0.602,0.921,0.92,-0.644,0.128,0.534
+cbp_custody,0.951,0.925,0.602,1.0,0.663,0.687,0.15,-0.274,0.171
+hhs_care,0.691,0.714,0.921,0.663,1.0,0.999,-0.483,0.038,0.509
+total_system_load,0.712,0.733,0.92,0.687,0.999,1.0,-0.462,0.025,0.502
+net_daily_intake,0.078,0.153,-0.644,0.15,-0.483,-0.462,1.0,-0.461,-0.487
+discharge_offset_ratio,-0.245,-0.29,0.128,-0.274,0.038,0.025,-0.461,1.0,0.257
+care_load_volatility_index,0.218,0.21,0.534,0.171,0.509,0.502,-0.487,0.257,1.0

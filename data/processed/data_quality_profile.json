@@ -1,0 +1,28 @@
+{
+  "raw_shape": [
+    1170,
+    6
+  ],
+  "nonblank_shape": [
+    720,
+    6
+  ],
+  "blank_rows": 450,
+  "duplicate_rows": 0,
+  "duplicate_dates": 0,
+  "date_min": "2023-01-12",
+  "date_max": "2025-12-21",
+  "observed_dates": 720,
+  "calendar_days": 1075,
+  "missing_calendar_days": 355,
+  "negative_counts": {
+    "apprehended_placed_cbp": 0,
+    "transferred_out_cbp": 0,
+    "discharged_hhs": 0,
+    "cbp_custody": 0,
+    "hhs_care": 0
+  },
+  "transfers_gt_cbp_custody": 86,
+  "discharges_gt_hhs_care": 0,
+  "zero_transfers": 3
+}
