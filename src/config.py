@@ -7,7 +7,8 @@ PROCESSED_DATA_DIR = DATA_DIR / "processed"
 OUTPUTS_DIR = PROJECT_ROOT / "outputs"
 FIGURES_DIR = OUTPUTS_DIR / "figures"
 FORECASTS_DIR = OUTPUTS_DIR / "forecasts"
-REPORTS_DIR = PROJECT_ROOT / "reports"
+TABLES_DIR = OUTPUTS_DIR / "tables"
+PAPER_DIR = PROJECT_ROOT / "paper"
 
 RAW_FILE = RAW_DATA_DIR / "HHS_Unaccompanied_Alien_Children_Program.csv"
 CLEAN_FILE = PROCESSED_DATA_DIR / "uac_clean_observed.csv"
@@ -17,6 +18,7 @@ WEEKLY_FILE = PROCESSED_DATA_DIR / "uac_weekly_trends.csv"
 PROFILE_FILE = PROCESSED_DATA_DIR / "data_quality_profile.json"
 MODEL_COMPARISON_FILE = FORECASTS_DIR / "model_comparison.csv"
 FORECAST_FILE = FORECASTS_DIR / "forecast_outputs.csv"
+RESEARCH_PAPER_FILE = PAPER_DIR / "system_capacity_care_load_research_paper.md"
 
 RAW_TO_CANONICAL_COLUMNS = {
     "Date": "date",
@@ -50,4 +52,3 @@ VOLATILITY_WINDOW = 14
 BACKLOG_MIN_DAYS = 3
 FORECAST_HORIZON_DAYS = 30
 TEST_DAYS = 90
-

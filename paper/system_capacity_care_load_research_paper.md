@@ -1,74 +1,4 @@
-from __future__ import annotations
-
-import json
-from pathlib import Path
-
-import pandas as pd
-
-from .config import DATE_COL, PAPER_DIR, PROFILE_FILE, RESEARCH_PAPER_FILE
-from .eda import business_interpretations
-
-
-def _profile_text() -> dict:
-    if PROFILE_FILE.exists():
-        return json.loads(PROFILE_FILE.read_text(encoding="utf-8"))
-    return {}
-
-
-def _best_models_text(comparison: pd.DataFrame | None) -> str:
-    if comparison is None or comparison.empty:
-        return "Forecast comparison outputs were not available at paper generation time."
-    ok = comparison[comparison["status"].eq("ok")].copy()
-    if ok.empty:
-        return "All advanced forecast models were skipped or unavailable in the current environment."
-    winners = ok.sort_values("rmse").groupby("target", as_index=False).head(1)
-    return "; ".join(
-        f"{row.target}: {row.model} (MAE {row.mae:,.1f}, RMSE {row.rmse:,.1f})"
-        for row in winners.itertuples(index=False)
-    )
-
-
-def _state_counts_text(df: pd.DataFrame) -> str:
-    counts = df[df["is_observed"]]["system_state"].value_counts().to_dict()
-    order = ["Normal", "Watch", "Strained", "Relief", "Missing Report"]
-    parts = [f"{state}: {counts[state]:,}" for state in order if state in counts]
-    return "; ".join(parts)
-
-
-def write_research_paper(
-    df: pd.DataFrame,
-    comparison: pd.DataFrame | None = None,
-    path: Path = RESEARCH_PAPER_FILE,
-) -> Path:
-    """Write the standalone project report paper."""
-    PAPER_DIR.mkdir(parents=True, exist_ok=True)
-    profile = _profile_text()
-    interp = business_interpretations(df)
-    observed = df[df["is_observed"]].copy()
-    peak = observed.loc[observed["total_system_load"].idxmax()]
-    trough = observed.loc[observed["total_system_load"].idxmin()]
-    avg_load = observed["total_system_load"].mean()
-    avg_hhs = observed["hhs_care"].mean()
-    avg_cbp = observed["cbp_custody"].mean()
-    avg_net = observed["net_daily_intake"].mean()
-    anomaly_days = int(
-        observed[
-            [
-                "flag_transfers_gt_cbp_custody",
-                "flag_discharges_gt_hhs_care",
-                "flag_zero_transfer_ratio",
-                "volatility_spike_flag",
-                "net_intake_spike_flag",
-            ]
-        ]
-        .fillna(False)
-        .any(axis=1)
-        .sum()
-    )
-    negative_count_total = sum(profile.get("negative_counts", {}).values())
-    best_models = _best_models_text(comparison)
-
-    content = f"""# System Capacity & Care Load Analytics for Unaccompanied Children
+# System Capacity & Care Load Analytics for Unaccompanied Children
 
 **A Healthcare Operations and Policy Analytics Report**
 
@@ -99,7 +29,7 @@ This project addresses that gap by creating a reproducible analytics pipeline an
 
 ## 4. Dataset Overview
 
-The dataset contains daily operational records from `{profile.get("date_min")}` through `{profile.get("date_max")}`. The raw CSV has `{profile.get("raw_shape", ["unknown", "unknown"])[0]}` rows and `{profile.get("raw_shape", ["unknown", "unknown"])[1]}` columns. After dropping fully blank trailing rows, `{profile.get("nonblank_shape", ["unknown"])[0]}` usable observations remain. The full date range contains `{profile.get("calendar_days")}` calendar days, of which `{profile.get("observed_dates")}` are observed reporting dates and `{profile.get("missing_calendar_days")}` are missing reporting dates.
+The dataset contains daily operational records from `2023-01-12` through `2025-12-21`. The raw CSV has `1170` rows and `6` columns. After dropping fully blank trailing rows, `720` usable observations remain. The full date range contains `1075` calendar days, of which `720` are observed reporting dates and `355` are missing reporting dates.
 
 | Field | Business Meaning | Analytical Use |
 |---|---|---|
@@ -118,13 +48,13 @@ Because the dataset has missing calendar dates, the pipeline flags missing dates
 
 Validation results:
 
-- Fully blank raw rows removed: `{profile.get("blank_rows")}`
-- Duplicate full rows: `{profile.get("duplicate_rows")}`
-- Duplicate dates: `{profile.get("duplicate_dates")}`
-- Negative count records: `{negative_count_total}`
-- Transfers greater than same-day CBP custody: `{profile.get("transfers_gt_cbp_custody")}` records
-- Discharges greater than same-day HHS care: `{profile.get("discharges_gt_hhs_care")}` records
-- Zero-transfer records affecting discharge-offset ratio: `{profile.get("zero_transfers")}` records
+- Fully blank raw rows removed: `450`
+- Duplicate full rows: `0`
+- Duplicate dates: `0`
+- Negative count records: `0`
+- Transfers greater than same-day CBP custody: `86` records
+- Discharges greater than same-day HHS care: `0` records
+- Zero-transfer records affecting discharge-offset ratio: `3` records
 
 ## 6. KPI Framework
 
@@ -139,25 +69,25 @@ Validation results:
 
 ## 7. Exploratory Data Analysis
 
-{interp["load_trend"]} The observed average total system load is `{avg_load:,.1f}` children, with average HHS care load of `{avg_hhs:,.1f}` and average CBP custody load of `{avg_cbp:,.1f}`. HHS care dominates total system load, which means capacity planning should focus heavily on shelter census, clinical readiness, and case-management throughput.
+Total system load peaked at 11,762 children on 2023-12-20 and reached its lowest observed level of 2,002 on 2025-08-24. The observed average total system load is `6,232.8` children, with average HHS care load of `6,061.3` and average CBP custody load of `171.5`. HHS care dominates total system load, which means capacity planning should focus heavily on shelter census, clinical readiness, and case-management throughput.
 
-{interp["net_intake"]} This means the full-period average shows discharge relief, but localized backlog windows still matter. A system can have negative average net intake overall while still facing short periods where transfers exceed discharges and create operational pressure.
+Average observed net intake was -44.7 children per reporting day, meaning discharges generally exceeded transfers over the full period. This means the full-period average shows discharge relief, but localized backlog windows still matter. A system can have negative average net intake overall while still facing short periods where transfers exceed discharges and create operational pressure.
 
-The highest observed total system load was `{peak["total_system_load"]:,.0f}` children on `{peak[DATE_COL].date()}`. The lowest observed total system load was `{trough["total_system_load"]:,.0f}` children on `{trough[DATE_COL].date()}`. This large spread shows that the system operates across substantially different capacity regimes and requires monitoring that can distinguish ordinary fluctuations from meaningful strain.
+The highest observed total system load was `11,762` children on `2023-12-20`. The lowest observed total system load was `2,002` children on `2025-08-24`. This large spread shows that the system operates across substantially different capacity regimes and requires monitoring that can distinguish ordinary fluctuations from meaningful strain.
 
 ## 8. Capacity Stress Analysis
 
 The dashboard classifies system state as Normal, Watch, Strained, Relief, or Missing Report. The classification combines total-load thresholds, sustained positive or negative net intake, and rolling volatility. The intent is not to assign fault, but to support early warning and operational prioritization.
 
-Observed reporting days by state: {_state_counts_text(df)}.
+Observed reporting days by state: Normal: 317; Watch: 183; Strained: 40; Relief: 180.
 
-Quality and stress review identified `{anomaly_days}` observed days with at least one operational alert or spike flag. The most important validation anomaly is the transfer-to-custody rule: transfers exceed same-day CBP custody on `{profile.get("transfers_gt_cbp_custody")}` observed records. These rows are retained and flagged because they may reflect reporting timing, definitional differences, or batch updates rather than simple data errors.
+Quality and stress review identified `375` observed days with at least one operational alert or spike flag. The most important validation anomaly is the transfer-to-custody rule: transfers exceed same-day CBP custody on `86` observed records. These rows are retained and flagged because they may reflect reporting timing, definitional differences, or batch updates rather than simple data errors.
 
 ## 9. Forecasting
 
 Forecasting is useful for planning, but not for deterministic prediction. The model comparison includes moving average, exponential smoothing, SARIMA, Prophet, Random Forest, and XGBoost when available. Models are evaluated with time-based train/test splits using MAE, RMSE, and MAPE where denominator behavior is safe.
 
-Best validation results by target: {best_models}.
+Best validation results by target: Discharge Volume: Random Forest (MAE 3.3, RMSE 3.9); Net Daily Intake: Random Forest (MAE 5.5, RMSE 6.6); HHS Care Load: Random Forest (MAE 157.4, RMSE 186.9); Total System Load: Random Forest (MAE 161.4, RMSE 190.8).
 
 Forecast interpretation should remain cautious because policy changes, reporting gaps, border conditions, sponsor-processing shifts, and operational decisions can change the trajectory quickly. Forecast outputs should therefore support scenario planning, not replace expert judgment.
 
@@ -185,10 +115,3 @@ The dataset does not include official bed capacity, facility-level geography, ag
 ## 13. Conclusion
 
 This project converts raw UAC operational records into a transparent healthcare operations analytics system. It supports data validation, KPI monitoring, stress classification, EDA, forecasting, and dashboard-based decision support. The final product is designed to be useful for policy analytics, humanitarian response planning, healthcare operations storytelling, and a professional data analytics portfolio.
-"""
-    path.write_text(content, encoding="utf-8")
-    return path
-
-
-def write_all_artifacts(df: pd.DataFrame, comparison: pd.DataFrame | None = None) -> list[Path]:
-    return [write_research_paper(df, comparison)]

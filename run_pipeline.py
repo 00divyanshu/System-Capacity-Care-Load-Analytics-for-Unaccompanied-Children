@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-import pandas as pd
-
 from src.artifacts import write_all_artifacts
-from src.config import DAILY_FILE, FORECAST_FILE, MODEL_COMPARISON_FILE, REPORTS_DIR
+from src.config import DAILY_FILE, FORECAST_FILE, MODEL_COMPARISON_FILE, TABLES_DIR
 from src.data_processing import run_processing
 from src.eda import generate_eda_figures, write_eda_tables
 from src.forecasting import run_forecasts
@@ -12,7 +10,7 @@ from src.forecasting import run_forecasts
 def main() -> None:
     observed_df, daily_df, profile = run_processing()
     generate_eda_figures(daily_df)
-    write_eda_tables(daily_df, REPORTS_DIR)
+    write_eda_tables(daily_df, TABLES_DIR)
 
     comparison, forecasts = run_forecasts(daily_df)
     MODEL_COMPARISON_FILE.parent.mkdir(parents=True, exist_ok=True)

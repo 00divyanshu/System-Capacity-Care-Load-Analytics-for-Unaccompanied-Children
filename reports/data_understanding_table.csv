@@ -1,7 +1,0 @@
-Column Name,Description,Data Type,Business Meaning,Analytical Importance
-Date,Operational reporting date,datetime,"The day associated with custody, transfer, care, and discharge counts.","Time-series index for trend, rolling, seasonality, and forecast analysis."
-Children apprehended and placed in CBP custody*,Daily children entering CBP custody,integer,Upstream demand entering the federal care pipeline.,Early signal of intake pressure and potential future HHS demand.
-Children in CBP custody,Point-in-time CBP custody count,integer,Current short-term holding load before transfer.,Measures immediate border-side pressure and transfer urgency.
-Children transferred out of CBP custody,Daily transfers out of CBP custody,integer,Flow moving from CBP custody toward HHS care or another disposition.,Primary inflow pressure on HHS care resources.
-Children in HHS Care,Point-in-time HHS care count,integer,"Current child population requiring shelter, healthcare, case management, and sponsor work.",Core capacity-load measure for operational planning.
-Children discharged from HHS Care,Daily exits from HHS care,integer,Sponsor placements or other exits that relieve HHS care capacity.,Measures throughput and relief capacity against intake.
