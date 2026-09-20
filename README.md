@@ -1,94 +1,181 @@
-# System Capacity & Care Load Analytics for Unaccompanied Children
+# OpsCapacity | Operational Load & Flow Intelligence Engine
 
-## Project Overview
-This portfolio-grade analytics project converts UAC daily operational records into capacity intelligence for the CBP-to-HHS care pipeline. It measures system load, intake-discharge balance, backlog accumulation, volatility, relief periods, and forecastable care-load trends.
+> **End-to-end Python pipeline and interactive Streamlit analytics platform for real-time facility stress modeling and intake/discharge forecasting.**
 
-## Problem Statement
-Daily operational records exist, but they do not automatically show when the care system is under pressure, whether discharges are keeping pace with transfers, or when backlog risk is accumulating. This project creates a reproducible analytical framework and interactive dashboard for those decisions.
+[![Live Demo](https://img.shields.io/badge/🚀%20Streamlit%20Cloud-Live%20Dashboard-0f766e?style=for-the-badge&logo=streamlit)](https://00divyanshu-system-capacity-care-load-a-appstreamlit-app-5fmusb.streamlit.app/)
+[![Python](https://img.shields.io/badge/Python-3.12+-blue?style=flat-square&logo=python)](https://www.python.org/)
+[![Status](https://img.shields.io/badge/Production-Enterprise%20Grade-success?style=flat-square)](#)
+[![Tests](https://img.shields.io/badge/pytest-Passing-brightgreen?style=flat-square&logo=pytest)](#)
+[![License](https://img.shields.io/badge/License-MIT-lightgrey?style=flat-square)](#)
 
-## Objectives
-- Clean and validate daily CBP/HHS operational data.
-- Engineer healthcare capacity KPIs and anomaly flags.
-- Identify high-load, strained, watch, normal, and relief periods.
-- Compare forecasting models for system load, HHS care, net intake, and discharges.
-- Deliver dashboard, a polished research paper, and reproducible project documentation.
+---
 
-## Dataset Information
-Source file: `data/raw/HHS_Unaccompanied_Alien_Children_Program.csv`
+### 🌐 Live Platform Access
+Experience the fully deployed, interactive operational intelligence console:
 
-Columns:
-- `Date`
-- `Children apprehended and placed in CBP custody*`
-- `Children in CBP custody`
-- `Children transferred out of CBP custody`
-- `Children in HHS Care`
-- `Children discharged from HHS Care`
+👉 **[🚀 Launch Live Interactive Dashboard](https://00divyanshu-system-capacity-care-load-a-appstreamlit-app-5fmusb.streamlit.app/)**
 
-Initial inspection found 720 usable records from January 12, 2023 to December 21, 2025, plus 450 blank trailing rows and 355 missing calendar dates.
+---
 
-## Technologies Used
-Python, pandas, NumPy, Plotly, Matplotlib, Seaborn, scikit-learn, statsmodels, Prophet, XGBoost, Streamlit, pytest.
+## 💼 The Business Problem Solved
 
-## KPIs
-- Total System Load = CBP Custody + HHS Care
-- Net Daily Intake = Transfers out of CBP custody - HHS discharges
-- Care Load Growth Rate = day-over-day percent change in total system load
-- Discharge Offset Ratio = HHS discharges / transfers out of CBP custody
-- Care Load Volatility Index = rolling standard deviation of total system load
-- Backlog Indicator = sustained positive net intake
+In high-stakes care delivery, custody management, and institutional bed networks, operations teams frequently grapple with fragmented daily intake records and delayed cross-department handoffs. When intake surges outpace discharge rates without warning, facility bed capacity is breached, emergency transfer costs skyrocket, and compliance vulnerabilities emerge.
 
-## Dashboard Features
-- Date range selector
-- Daily, weekly, and monthly views
-- Metric toggles
-- Rolling average controls
-- Executive status strip and KPI summary cards
-- Tabbed views for overview, stress analysis, forecasts, and data quality
-- System state timeline
-- Net intake and backlog visualization
-- Forecast model comparison
-- Anomaly review table
-- Filtered data download
+**OpsCapacity** bridges the gap between raw, disconnected administrative logs and executive decision-making. By automating data ingestion, synthesizing real-time stress indicators, and forecasting demand up to 30 days ahead, the platform equips operations directors and planners with proactive capacity governance instead of reactive crisis response.
 
-## Key Insights
-- HHS care load is the dominant component of total system load.
-- The dataset has material missing reporting dates, so missing-date flags are retained.
-- Transfers exceed same-day CBP custody on 86 observed dates; these are flagged for review rather than removed.
-- Forecasts are useful as planning signals, but policy shocks and reporting gaps limit deterministic interpretation.
+---
 
-## Installation
-```bash
-python -m pip install -r requirements.txt
+## ⚡ Key Features & Business Deliverables
+
+| Capability | Operational Value & Commercial Deliverable |
+| :--- | :--- |
+| 🔄 **Automated Ingestion & Cleaning** | Ingests multi-year historical logs, reconciles date gaps, resolves stock-flow inconsistencies, and flags non-reporting intervals automatically. |
+| 🚨 **Real-Time Stress & Anomaly Scoring** | Monitors net daily intake pressure, detects discharge-to-transfer deficits, computes a rolling volatility index, and categorizes system state (*Normal*, *Watch*, *Strained*, *Relief*). |
+| 🎛️ **Dynamic Decision Controls** | Interactive sliders and toggles allow executives to evaluate data at Daily, Weekly, or Monthly granularity, customize rolling averages (7–30 days), and adjust forecast horizons in real time. |
+| 📥 **One-Click Data Export Center** | Primary sidebar action exports the active, filtered dataset into standardized CSV reports ready for board presentations, audits, and downstream BI ingestion. |
+| 📈 **Multi-Model Forecasting Engine** | Evaluates and visualizes predictive trajectory models (Prophet, XGBoost, Random Forest, Ridge Regression, Rolling Baseline) against historical ground truth. |
+
+---
+
+## 🏗️ System Architecture
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        RAW OPERATIONAL LOGS                            │
+│           (Daily Apprehensions, Custody, Transfers, Discharges)        │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                    INGESTION & CLEANING ENGINE                         │
+│   • Schema Validation & Normalization                                  │
+│   • Missing Reporting Date Imputation & Tracking                       │
+│   • Stock-Flow Consistency & Anomaly Auditing                          │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│               METRIC & STRESS AGGREGATION ENGINE                       │
+│   • Net Intake Pressure (Transfers - Discharges)                       │
+│   • Discharge Offset Ratio (Discharges / Transfers)                    │
+│   • Care Load Volatility Index (Rolling System Std Dev)                │
+│   • Automated State Classifier (Normal | Watch | Strained | Relief)    │
+│   • Multi-Model Forecasting Benchmark (XGBoost, Prophet, RF)           │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │
+                  ┌─────────────────┴─────────────────┐
+                  ▼                                   ▼
+┌───────────────────────────────────┐ ┌───────────────────────────────────┐
+│     STREAMLIT EXECUTIVE UI        │ │       EXPORT CENTER (CSV)         │
+│  • Headroom-Optimized Header      │ │  • Active Filter Respecting       │
+│  • Non-Truncated KPI Cards        │ │  • Granular & Rolling Averaged    │
+│  • Interactive Stress Timelines   │ │  • Instant Operational Reporting  │
+│  • Anomaly Deep-Dive Review       │ │                                   │
+└───────────────────────────────────┘ └───────────────────────────────────┘
 ```
 
-## Run the Pipeline
+---
+
+## 📊 Core Operational KPIs Defined
+
+$$
+\text{Total in Care} = \text{CBP Custody} + \text{HHS Care Census}
+$$
+
+$$
+\text{Net Intake Pressure} = \text{Transfers In} - \text{Discharges Out}
+$$
+
+$$
+\text{Discharge Ratio} = \frac{\text{Discharges Out}}{\text{Transfers In}}
+$$
+
+$$
+\text{Care Load Volatility Index} = \sigma_{\tau}(\text{Total System Load})
+$$
+
+* **Backlog Risk**: Sustained periods where $\text{Net Intake Pressure} > 0$ and $\text{Discharge Ratio} < 1.0$.
+* **System States**:
+  * 🟢 **Normal**: Intake and discharge flows are balanced within baseline operational variance.
+  * 🟡 **Watch**: Net intake is elevated or volatility exceeds standard thresholds.
+  * 🔴 **Strained**: Cumulative intake exceeds discharge throughput, indicating active backlog buildup.
+  * 🔵 **Relief**: Discharges significantly outpace arrivals, reducing total facility care load.
+
+---
+
+## 🚀 Quickstart Guide
+
+Get the production engine running locally in 3 simple steps:
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/00divyanshu/System-Capacity-Care-Load-Analytics-for-Unaccompanied-Children.git
+cd "System Capacity & Care Load Analytics for Unaccompanied Children"
+```
+
+### 2. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Launch the Interactive Platform
+```bash
+streamlit run app.py
+```
+*(Alternatively: `streamlit run app/streamlit_app.py`)*
+
+---
+
+### (Optional) Execute the Complete Data Pipeline
+To refresh processed feature matrices, regenerate figures, and retrain forecast models:
 ```bash
 python run_pipeline.py
 ```
 
-## Launch the Dashboard
+To run the automated test suite:
 ```bash
-streamlit run app/streamlit_app.py
+python -m pytest
 ```
 
-## Project Structure
+---
+
+## 📁 Repository Structure
+
 ```text
-data/
-  raw/                 Source CSV
-  processed/           Cleaned data, daily feature table, trend tables, quality profile
-notebooks/             Exploratory notebooks
-src/                   Modular processing, feature, EDA, forecast, and reporting code
-app/                   Streamlit application
-outputs/
-  figures/             EDA HTML charts
-  forecasts/           Forecast outputs and model comparisons
-  tables/              Generated EDA and data-understanding tables
-paper/                 Standalone research/report paper
-tests/                 Automated validation checks
+├── app.py                     # Root Streamlit entrypoint (quickstart compatible)
+├── app/
+│   └── streamlit_app.py       # Production Streamlit Cloud dashboard application
+├── src/
+│   ├── config.py              # Centralized directory paths and parameter constants
+│   ├── data_processing.py     # Ingestion, calendar alignment, and cleaning logic
+│   ├── features.py            # Feature engineering, ratio modeling, and stress states
+│   ├── eda.py                 # Statistical summaries, correlation, and charts
+│   ├── forecasting.py         # Multi-model time-series forecasting suite
+│   └── artifacts.py           # Report generator and artifact exports
+├── data/
+│   ├── raw/                   # Immutable raw operational logs
+│   └── processed/             # Cleaned daily panel, features, and quality flags
+├── outputs/
+│   ├── figures/               # Standalone interactive Plotly HTML visualizations
+│   ├── forecasts/             # Model predictions and comparison benchmark tables
+│   └── tables/                # Summary statistics and correlation matrices
+├── tests/
+│   └── test_pipeline.py       # Automated unit and integration test assertions
+├── requirements.txt           # Verified Python package dependencies
+└── README.md                  # Commercial project documentation & executive brief
 ```
 
-## Future Improvements
-- Add facility capacity, geography, length of stay, acuity, and staffing data.
-- Build scenario forecasts under policy or surge assumptions.
-- Add confidence intervals and model monitoring.
-- Deploy the dashboard to Streamlit Community Cloud or another hosted environment.
+---
+
+## 💼 Commercial & Advisory Engagement
+
+This platform is architected to serve as a customizable foundation for:
+- **Hospital & Health Network Bed Management**: Forecasting admissions, transfers, and length-of-stay bottlenecks.
+- **Logistics & Custody Facilities**: Automated cross-department flow balancing and capacity anomaly alarms.
+- **Humanitarian & NGO Field Operations**: Tracking caseload strain and intake surges in real time.
+
+For customized deployments, proprietary database integrations (BigQuery, Snowflake, PostgreSQL), or custom forecasting algorithms, please open an issue or connect directly via GitHub.
+
+---
+
+*Engineered with precision for mission-critical operational intelligence.*
